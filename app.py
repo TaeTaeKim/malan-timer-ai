@@ -1,14 +1,12 @@
 import cv2
 from fastapi import FastAPI, UploadFile, File
-import shutil
-import os
 from ultralytics import YOLO
 import logging
 import easyocr
 import numpy as np
-from game_stat_extractor_module import extract_stats_from_image
 from contextlib import asynccontextmanager
 import time
+from extractor.stat_extractor import extract_all_stats_async
 
 # Preload models on startup
 MODEL_PATH = "./best.pt"
@@ -36,10 +34,10 @@ async def extract_stats(file: UploadFile = File(...)):
     # Read image data from uploade file
     contents = await file.read()
     nparr = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    request_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     
     start_time = time.time()
-    result = extract_stats_from_image(img, model, reader)
+    result = extract_all_stats_async(request_img, model, reader)
     elapsed_time = time.time() - start_time
     logger.info(f"extract_stats_from_image executed in {elapsed_time:.4f} seconds")
     return {"extracted_data": result}

@@ -13,9 +13,13 @@ def preprocess_roi(roi, method='simple'):
     return cv2.resize(roi_binary, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
 
 
-# using AI to extract using ai
-# 현재는 exp, level 에서는 template matching 이 결과가 좋아 메소에만 AI 사용
-async def extract_stats_from_image(main_image, model, reader):
+
+def extract_stats_from_image(main_image, model, reader):
+    """
+    # This asynchronous function takes an input image, a YOLO model, and an OCR reader,
+    # and extracts the "meso" stat from the image using object detection and OCR.
+    # It returns a dictionary with the key "meso" and its extracted value (if found).
+    """
     if main_image is None:
         raise ValueError("Invalid image data provided")
     extracted_data = {}
@@ -25,21 +29,21 @@ async def extract_stats_from_image(main_image, model, reader):
         for box in r.boxes:
             class_id = int(box.cls[0])
             class_name = class_names[class_id]
-            if(class_name!="meso"): # 임시로 메소만 진행
-                continue
+            # if(class_name!="meso"): # 임시로 메소만 진행
+            #     continue
             x1, y1, x2, y2 = map(int, box.xyxy[0])
             roi = main_image[y1:y2, x1:x2]
-            if class_name == "exp":
-                h, w, _ = roi.shape
-                crop_width = int(w * 0.23)
-                roi = roi[:, crop_width:]
+            # if class_name == "exp":
+            #     h, w, _ = roi.shape
+            #     crop_width = int(w * 0.23)
+            #     roi = roi[:, crop_width:]
             if roi.size == 0:
                 continue
             preprocess_method = 'white_text' if class_name == 'level' else 'simple'
             preprocessed_roi = preprocess_roi(roi, preprocess_method)
             allowlist = '0123456789,'
             if class_name == "exp":
-                allowlist = '0123456789[]%'
+                allowlist = '0123456789[]EXP%'
             ocr_raw_results = reader.readtext(preprocessed_roi, detail=0, allowlist=allowlist)
             if ocr_raw_results:
                 full_text = "".join(str(x) for x in ocr_raw_results)

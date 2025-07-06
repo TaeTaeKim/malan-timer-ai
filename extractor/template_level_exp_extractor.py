@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import os
 import asyncio
-from .ai_meso_extractor import preprocess_roi
+from .ai_extractor import preprocess_roi
 
 # Configurations for template matching
 TEMPLATES = {

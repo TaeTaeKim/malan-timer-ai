@@ -1,5 +1,5 @@
-# Use your pre-pulled PyTorch image as the base
-FROM pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+# Use an official Python runtime as a parent image
+FROM python:3.13-slim
 
 # Set the working directory
 WORKDIR /app
@@ -7,8 +7,7 @@ WORKDIR /app
 # Copy the application code
 COPY . .
 
-# Install the remaining dependencies from requirements.txt
-# PyTorch is already in the base image, so we don't need to install it again.
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port and run the application

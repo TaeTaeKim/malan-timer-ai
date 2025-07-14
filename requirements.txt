@@ -5,3 +5,5 @@ ultralytics
 easyocr
 numpy
 python-multipart
+torch
+torchvision

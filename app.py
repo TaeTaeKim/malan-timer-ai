@@ -9,7 +9,7 @@ import time
 from extractor.stat_extractor import extract_all_stats_async
 
 # Preload models on startup
-MODEL_PATH = "./best.pt"
+MODEL_PATH = "/app/models/best.pt"
 
 logging.basicConfig(
     level=logging.INFO,

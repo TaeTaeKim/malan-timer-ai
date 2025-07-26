@@ -6,10 +6,11 @@ import easyocr
 import numpy as np
 from contextlib import asynccontextmanager
 import time
+import os
 from extractor.stat_extractor import extract_all_stats_async
 
 # Preload models on startup
-MODEL_PATH = "/app/models/best.pt"
+MODEL_PATH = os.getenv("MODEL_PATH", "./best.pt")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,6 +24,7 @@ async def lifespan(app: FastAPI):
     logger.info("Start Malan Timer AI FaseAPI application")
     global reader, model
     reader = easyocr.Reader(['en'], gpu=True)
+    print(f"use model in {MODEL_PATH}")
     model = YOLO(MODEL_PATH)
     logger.info("Pre-load YOLO and EasyOCR succeed")
     yield  # App runs here
